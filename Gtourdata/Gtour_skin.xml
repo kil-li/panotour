@@ -447,6 +447,35 @@
 
 
 
+<action name="setViewNormal">
+	stopSetViewTweens();
+	if(current_view_isflat === true,
+		setViewNonFlat(VFOV);
+	);
+	setViewNormalComplete();
+</action>
+
+<action name="setViewNormalComplete">
+	set(view.fisheyefovlink, 0.5);
+	set(view.fovmax, get(panoview.fovmax));
+	tween(view.architectural, 0.0, distance(1.0, 0.45));
+	tween(view.pannini, 0.0, distance(1.0, 0.45), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
+	tween(view.vlookat, get(panoview.v), distance(90, 0.45));
+	tween(view.fov, get(panoview.fov), distance(50, 0.45));
+	tween(view.fisheye, 0.0, distance(1.0, 0.45),
+		set(view.stereographic,false);
+	);
+</action>
+
+<krpano normalViewActivated="true" />
+<action name="stopSetViewTweens">
+	stoptween(view.fov);
+	stoptween(view.vlookat);
+	stoptween(view.fisheye);
+	stoptween(view.architectural);
+	stoptween(view.pannini);
+</action>
+
 <action name="setViewArchitectural">
 	if(normalViewActivated,stopSetViewTweens(););
 	if(current_view_isflat === true,
@@ -466,6 +495,18 @@
 	);
 	tween(view.fov, get(panoview.fov), distance(50, 0.45));
 </action>
+
+  <!-- Fullscreen Management -->
+  <action name="exitFullScreen" devices="fullscreensupport">set(tour_fullscreen,false);set(fullscreen,false);</action>
+  <action name="enterFullScreen" devices="fullscreensupport">set(tour_fullscreen,true);set(fullscreen,true);</action>
+  <action name="switchFullScreen">if(tour_fullscreen,exitFullScreen();,enterFullScreen(););</action>
+
+  
+  <events name="krpanoExitFullscreenEvent"
+    onexitfullscreen="if(tour_fullscreen,exitFullScreenChangeEvent(););"
+    keep="true" />
+
+  <action name="exitFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,false);events.dispatch(onexitfullscreen);</action>
 
 <action name="setViewLittlePlanet">
 	set(sceneisfull360, false);
@@ -500,47 +541,6 @@
 	if(panoview.fovmax LE 150, set(view.fovmax, 150); , set(view.fovmax, get(panoview.fovmax)); );
 	tween(view.fisheye, 1.0, distance(1.0, 0.75));
 	tween(view.fov, 150, distance(179, 0.75));
-</action>
-
-  <!-- Fullscreen Management -->
-  <action name="exitFullScreen" devices="fullscreensupport">set(tour_fullscreen,false);set(fullscreen,false);</action>
-  <action name="enterFullScreen" devices="fullscreensupport">set(tour_fullscreen,true);set(fullscreen,true);</action>
-  <action name="switchFullScreen">if(tour_fullscreen,exitFullScreen();,enterFullScreen(););</action>
-
-  
-  <events name="krpanoExitFullscreenEvent"
-    onexitfullscreen="if(tour_fullscreen,exitFullScreenChangeEvent(););"
-    keep="true" />
-
-  <action name="exitFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,false);events.dispatch(onexitfullscreen);</action>
-
-<action name="setViewNormal">
-	stopSetViewTweens();
-	if(current_view_isflat === true,
-		setViewNonFlat(VFOV);
-	);
-	setViewNormalComplete();
-</action>
-
-<action name="setViewNormalComplete">
-	set(view.fisheyefovlink, 0.5);
-	set(view.fovmax, get(panoview.fovmax));
-	tween(view.architectural, 0.0, distance(1.0, 0.45));
-	tween(view.pannini, 0.0, distance(1.0, 0.45), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
-	tween(view.vlookat, get(panoview.v), distance(90, 0.45));
-	tween(view.fov, get(panoview.fov), distance(50, 0.45));
-	tween(view.fisheye, 0.0, distance(1.0, 0.45),
-		set(view.stereographic,false);
-	);
-</action>
-
-<krpano normalViewActivated="true" />
-<action name="stopSetViewTweens">
-	stoptween(view.fov);
-	stoptween(view.vlookat);
-	stoptween(view.fisheye);
-	stoptween(view.architectural);
-	stoptween(view.pannini);
 </action>
 
 </krpano>
